@@ -35,8 +35,9 @@ readcol = 3
 
 def openWorkbook(workbook, sheet):
     # 获得行数和列数
-    rows = sheet.nrows - 1
-    cols = sheet.ncols - 1
+    rows = sheet.nrows 
+    cols = sheet.ncols 
+    print("rows,cols:",rows,cols)
     # 创建一个数组用来存储excel中的数据
     p = []
 
@@ -57,7 +58,7 @@ def openWorkbook(workbook, sheet):
 
                 return
             d[q] = sheet.cell(i, j).value
-            #print(sheet.cell(i, j).value)
+           # print(sheet.cell(i, j).value)
 
         ap = []
         count = 0
