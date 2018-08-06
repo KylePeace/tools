@@ -35,9 +35,10 @@ readcol = 3
 
 def openWorkbook(workbook, sheet):
     # 获得行数和列数
-    rows = sheet.nrows 
-    cols = sheet.ncols 
-    print("rows,cols:",rows,cols)
+    rows = sheet.nrows
+    cols = sheet.ncols
+    print("%s rows,cols:%d,%d" % (sheet.name, rows, cols))
+
     # 创建一个数组用来存储excel中的数据
     p = []
 
