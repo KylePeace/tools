@@ -1,4 +1,5 @@
 let packageName = "excel-killer";
+
 let fs = require('fire-fs');
 let path = require('fire-path');
 let CfgUtil = Editor.require('packages://' + packageName + '/core/CfgUtil.js');
