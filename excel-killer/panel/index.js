@@ -128,11 +128,11 @@ Editor.Panel.extend({
                 },
                 ////////////////////////////////////////////////////////////////////////
                 _addLog(str) {
-                     let time = new Date();
+                    let time = new Date();
                     if (typeof str == "object") {
-                        this.logView = "[" + time.toLocaleString() + "]: " +JSON.stringify(str)+"\n";
+                        this.logView = "[" + time.toLocaleString() + "]: " + JSON.stringify(str) + "\n";
                     } else {
-                       
+
                         // this.logView = "[" + time.toLocaleString() + "]: " + str + "\n" + this.logView;
                         this.logView += "[" + time.toLocaleString() + "]: " + str + "\n";
                     }
@@ -484,14 +484,19 @@ Editor.Panel.extend({
                         }
                         let saveLineData = {};
                         let canExport = false;
+                        this._addLog(target)
+
+                        this._addLog(desc+'')
+                        
+                        this._addLog(title+'')
+
                         for (let j = 1; j < title.length; j++) {
                             canExport = false;
-                            console.log("=====", target[j])
-                            // if (isClient && target[j].indexOf('c') !== -1) {
-                            canExport = true;
-                            // } else if (!isClient && target[j].indexOf('s') !== -1) {
-                            canExport = true;
-                            //  }
+                             if (isClient && (target[j]+'').indexOf('c') !== -1) {
+                                 canExport = true;
+                            } else if (!isClient && (target[j]+'').indexOf('s') !== -1) {
+                                canExport = true;
+                            }
                             if (canExport) {
                                 let key = title[j];
                                 let value = lineData[j];
@@ -503,12 +508,12 @@ Editor.Panel.extend({
                             }
                         }
 
-                        canExport = true;
-                        // if (isClient && target[0].indexOf('c') !== -1) {
-                        //     canExport = true;
-                        // } else if (!isClient && target[0].indexOf('s') !== -1) {
-                        //     canExport = true;
-                        // }
+                        canExport = false;
+                        if (isClient && (target[0]+'').indexOf('c') !== -1) {
+                            canExport = true;
+                        } else if (!isClient && (target[0]+'').indexOf('s') !== -1) {
+                            canExport = true;
+                        }
                         if (canExport) {
                             sheetFormatData[lineData[0].toString()] = saveLineData;
                         }
@@ -535,9 +540,9 @@ Editor.Panel.extend({
                             let canExport = false;
                             for (let j = 0; j < title.length; j++) {
                                 canExport = false;
-                                if (isClient && target[j].indexOf('c') !== -1) {
-                                    canExport = true;
-                                } else if (!isClient && target[j].indexOf('s') !== -1) {
+                                if (isClient && (target[j]+'').indexOf('c') !== -1) {
+                                     canExport = true;
+                                } else if (!isClient && (target[j]+'').indexOf('s') !== -1) {
                                     canExport = true;
                                 }
                                 if (canExport) {
@@ -552,9 +557,9 @@ Editor.Panel.extend({
                             }
 
                             canExport = false;
-                            if (isClient && target[0].indexOf('c') !== -1) {
-                                canExport = true;
-                            } else if (!isClient && target[0].indexOf('s') !== -1) {
+                            if (isClient && (target[0]+'').indexOf('c') !== -1) {
+                                 canExport = true;
+                            } else if (!isClient && (target[0]+'').indexOf('s') !== -1) {
                                 canExport = true;
                             }
                             if (canExport) {
@@ -577,12 +582,12 @@ Editor.Panel.extend({
 
                             // todo 将ID字段也加入到data中
                             for (let j = 0; j < title.length; j++) {
-                                canExport = true;
-                                // if (isClient && target[j] && target[j].indexOf('c') !== -1) {
-                                //     canExport = true;
-                                // } else if (!isClient && target[j] && target[j].indexOf('s') !== -1) {
-                                //     canExport = true;
-                                // }
+                                canExport = false;
+                                 if (isClient && target[j] && (target[j]+'').indexOf('c') !== -1) {
+                                    canExport = true;
+                                } else if (!isClient && target[j] &&(target[j]+'').indexOf('s') !== -1) {
+                                    canExport = true;
+                                }
                                 if (canExport) {
                                     let key = title[j];
                                     let value = lineData[j];
@@ -594,12 +599,12 @@ Editor.Panel.extend({
                                 }
                             }
 
-                            canExport = true;
-                            // if (isClient && target[0] && target[0].indexOf('c') !== -1) {
-                            //     canExport = true;
-                            // } else if (!isClient && target[0] && target[0].indexOf('s') !== -1) {
-                            //     canExport = true;
-                            // }
+                            canExport = false;
+                            if (isClient && target[0] && (target[0]+'').indexOf('c') !== -1) {
+                                 canExport = true;
+                            } else if (!isClient && target[0] &&  (target[0]+'').indexOf('s') !== -1) {
+                                canExport = true;
+                            }
                             if (canExport) {
                                 saveData2[lineData[0].toString()] = saveLineData;
                             }
@@ -809,36 +814,13 @@ Editor.Panel.extend({
                     let saveStr = "module.exports = " + JSON.stringify(jsSaveData) + ";";
 
                     if (this.isFormatJsCode) { // 保存为格式化代码
-                        // let ast = uglifyJs.parse(saveStr);
-                        //  this._addLog(ast);
-                        // let ret = uglifyJs.minify(ast, {
-                        //     output: {
-                        //         // beautify: true, //如果希望得到格式化的输出，传入true
-                        //         indent_start: 0, //（仅当beautify为true时有效） - 初始缩进空格
-                        //         indent_level: 4, //（仅当beautify为true时有效） - 缩进级别，空格数量
-
-
-                        //     }
-                        //     mangle:false,
-                        // });
-                        // if (ret.error) {
-                        //     this._addLog('error: ' + ret.error.message);
-                        // } else if (ret.code) {
-                        //     this._addLog(ret.code);
-
-                        //     fs.writeFileSync(saveFileFullPath, ret.code);
-                        //     this._addLog("[JavaScript]" + saveFileFullPath);
-                        // } else {
-                        //     this._addLog(JSON.stringify(ret));
-                        // }
-
-                        let saveStr = "module.exports = " + JSON.stringify(jsSaveData,"","\t") + ";";
+                        let saveStr = "module.exports = " + JSON.stringify(jsSaveData, "", "\t") + ";";
                         fs.writeFileSync(saveFileFullPath, saveStr);
-                         this._addLog("[JavaScript]" + saveFileFullPath);
+                        this._addLog("[JavaScript]" + saveFileFullPath);
                     } else { // 保存为单行代码
                         fs.writeFileSync(saveFileFullPath, saveStr);
                         let ret = uglifyJs.minify(saveFileFullPath, {
-                           
+
                         });
                         this._addLog("[JavaScript]" + saveFileFullPath);
                     }
