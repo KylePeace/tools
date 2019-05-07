@@ -168,15 +168,10 @@ Editor.Panel.extend({
                 },
                 _watchDir(event, filePath) {
                     return;
-                    console.log("监控文件....");
-                    console.log(event, filePath);
-                    let ext = path.extname(filePath);
-                    if (ext === ".xlsx" || ext === ".xls") {
-                        this._onAnalyzeExcelDirPath(this.excelRootPath);
-                    }
+                 
                 },
                 onBtnClickHelpDoc() {
-                    let url = "https://github.com/tidys/CocosCreatorPlugins/tree/master/packages/excel-killer/README.md";
+                    let url = "https://github.com/kelykely/tools/blob/master/excel-killer/README.md";
                     Electron.shell.openExternal(url);
                 },
                 _initPluginCfg() {
