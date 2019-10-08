@@ -1,9 +1,9 @@
-
+﻿
 var fs = require('fs'); 
 var nodeCmd = require('node-cmd');
 var images = require("images");
 
-let targetDir = "C:/Users/Administrator/Desktop/test/pngquant/tex2"
+let targetDir = "./tex2"
 
 let isCompressJpg = true  //是否压缩jpg文件
 
