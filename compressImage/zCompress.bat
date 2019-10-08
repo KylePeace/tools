@@ -1,0 +1,2 @@
+node pngqunat.js
+pause

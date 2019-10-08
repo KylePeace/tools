@@ -1,0 +1,15 @@
+{
+  "name": "pngquant",
+  "version": "1.0.0",
+  "description": "[pngquant](https://pngquant.org) is a PNG compresor that significantly reduces file sizes by converting images to a more efficient 8-bit PNG format *with alpha channel* (often 60-80% smaller than 24/32-bit PNG files). Compressed images are fully standards-compliant and are supported by all web browsers and operating systems.",
+  "main": "pngqunat.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "images": "^3.0.2",
+    "node-cmd": "^3.0.0"
+  }
+}
