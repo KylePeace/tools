@@ -3,8 +3,7 @@ var fs = require('fs'); 
 var nodeCmd = require('node-cmd');
 var images = require("images");
 
-let targetDir = "./tex2"
-
+let targetDir = "./tex2"  //遍历目录
 let isCompressJpg = true  //是否压缩jpg文件
 
 
@@ -22,8 +21,7 @@ String.prototype.format = function () {
 
 let cmd = "pngquant.exe --force --verbose --speed=1   --ordered 256  {0} --output {1} " 
 
-let pngArr = []
-let jpgArr = []
+
 
 
 var compressPng = function (file) {
