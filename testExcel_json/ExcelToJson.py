@@ -15,18 +15,20 @@
     Date:2018/6/17
     ----------------------------
 '''
-
+# -*- coding: utf-8 -*-  
 import xlrd
 import os
-
+import sys
 
 # excel 路径
-excelPath = r"excel/"
+excelPath = os.getcwd()+r"/excel/"
 #json路径 = r"json"
-jsonPath = r'json/'
+jsonPath = os.getcwd()+r'/json/'
 
 # 文件名
 excelFile = []
+# print(sys.argv[0])
+# print(os.getcwd())
 
 
 # 数据正文开始行数从0开始的
@@ -91,21 +93,25 @@ def openWorkbook(workbook, sheet):
 
 # 获取制定目录下的所有excel文件
 def getExcelFiles(file_dir):
+    print(file_dir)
     for root, dirs, files in os.walk(file_dir):
-        # print(root)  # 当前目录路径
-        # print(dirs)  # 当前路径下所有子目录
+        root_dir = os.path.dirname(os.path.abspath('.')) 
+        print(root_dir+root)  # 当前目录路径
+        print(dirs)  # 当前路径下所有子目录
         print("打印文件名：", files)  # 当前路径下所有非目录子文件
         if(not files):
             print("获取文件名错误")
-            return
+            return []
         return files
 
 
 # 读取单个excel 文件
 def readExcel(file):
     # 读取excel表的数据
-    workbook = xlrd.open_workbook(r"excel/" + file)
+    workbook = xlrd.open_workbook(excelPath + file)
     # 选取需要读取数据的那一页
+  
+
     sheets = workbook.sheet_names()
     for sh in sheets:
         s = workbook.sheet_by_name(sh)
