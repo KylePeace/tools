@@ -19,7 +19,7 @@
 import xlrd
 import os
 import sys
-
+import json
 # excel 路径
 excelPath = os.getcwd()+r"/excel/"
 #json路径 = r"json"
@@ -69,6 +69,10 @@ def openWorkbook(workbook, sheet):
             # 类型检查
             valueType = sheet.cell(2, count).value
             count += 1
+            if(valueType == '' or valueType == None):
+                print("%s缺少类型"%sheet.name)
+                return
+
             if isinstance(v, float):  # excel中的数字值默认是float,需要进行判断处理，通过'"%s":%d'，'"%s":"%s"'格式化数组\
                 ap.append('"%s":%d' % (k, v))
             else:
@@ -76,8 +80,10 @@ def openWorkbook(workbook, sheet):
                     print("%s 表，类型错误%d行%d列：" % (sheet.name, i + 1, count))
                     print("        ")
                     return
-
-                ap.append('"%s":"%s"' % (k, v))
+                elif(valueType == "list"):  # 新增的数组类型判断
+                    ap.append('"%s":%s' % (k, json.dumps(str(v).split("|"))))  # 将数组类型的值转换为字符串并添加到列表中
+                elif(valueType == "string"):
+                    ap.append('"%s":"%s"' % (k, v))
 
         s = '{%s}' % (','.join(ap))  # 继续格式化
         p.append(s)
