@@ -20,6 +20,7 @@ import xlrd
 import os
 import sys
 import json
+import re
 # excel 路径
 excelPath = os.getcwd()+r"/excel/"
 #json路径 = r"json"
@@ -81,10 +82,50 @@ def openWorkbook(workbook, sheet):
                     print("        ")
                     return
                 elif(valueType == "list"):  # 新增的数组类型判断
-                    ap.append('"%s":%s' % (k, json.dumps(str(v).split("|"))))  # 将数组类型的值转换为字符串并添加到列表中
-                elif(valueType == "string"):
+                    # v2 = str(v).split("|")
+                    v2 = re.split(r'\|',str(v))
+                    v3 = []
+                    for vv in v2:
+                        if(vv.isdigit()):
+                            v3.append(int(vv))
+                        else:
+                            v3.append(str(vv))
+                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))  # 将数组类型的值转换为字符串并添加到列表中
+                elif(valueType == "string"): 
                     ap.append('"%s":"%s"' % (k, v))
-
+                elif(valueType == "num_list"):
+                    v2 = re.split(r'\|',str(v))
+                    v3 = []
+                    
+                    for vv in v2:
+                        if(not vv.isdigit()):
+                           print("%snum_list中有字符串"%sheet.name)
+                           return
+                        v3.append(int(vv))
+                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+                elif(valueType == "str_list"):
+                    v2 = re.split(r'\|',str(v))
+                    v3 = []
+                    for vv in v2:
+                        v3.append(str(vv))
+                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+                elif(valueType == "item"):
+                    v2 = re.split(r';',str(v))
+                    v3={
+                        "itemId":int(v2[0]),
+                        "itemNum":int(v2[1])
+                    }
+                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+                elif(valueType =="item_list"):
+                    v2 = re.split(r'\|',str(v))
+                    v3 = []
+                    for vv in v2:
+                        vv4 = re.split(r';',str(vv))
+                        v3.append({
+                        "itemId":int(vv4[0]),
+                        "itemNum":int(vv4[1])
+                    })
+                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
         s = '{%s}' % (','.join(ap))  # 继续格式化
         p.append(s)
 

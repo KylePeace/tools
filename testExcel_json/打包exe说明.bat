@@ -1,2 +1,2 @@
-pyinstaller -F D:\code\codetool\testExcel_json\ExcelToJson.py    -i  D:\code\codetool\testExcel_json\test.ico
+pyinstaller -F D:\learn\other\tools\testExcel_json\ExcelToJson.py    -i  D:\learn\other\tools\\testExcel_json\test.ico
 pause
