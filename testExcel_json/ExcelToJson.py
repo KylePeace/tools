@@ -21,11 +21,13 @@ import os
 import sys
 import json
 import re
-# excel 路径
+# # excel 路径
 excelPath = os.getcwd()+r"/excel/"
 #json路径 = r"json"
 jsonPath = os.getcwd()+r'/json/'
-
+# excelPath = r"D:/learn/other/tools/testExcel_json/excel/"
+# #json路径 = r"json"
+# jsonPath = r'D:/learn/other/tools/testExcel_json/json/'
 # 文件名
 excelFile = []
 # print(sys.argv[0])
@@ -35,6 +37,7 @@ excelFile = []
 # 数据正文开始行数从0开始的
 readcol = 3
 
+mixStr = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 def openWorkbook(workbook, sheet):
     # 获得行数和列数
@@ -51,19 +54,18 @@ def openWorkbook(workbook, sheet):
         d = {}
         for j in range(0, cols):
             q = "%s" % sheet.cell(1, j).value
-            # print(q)
             if(q == ""):
                 break
             if(sheet.cell(i, j).value == ""):
                 print("        ")
                 print("%s表第%d行，第%d列为空" % (sheet.name, i + 1, j + 1))
-                print("请修改%s表  后重新导出，否则会有错误！" % sheet.name)
+                # print("请修改%s表  后重新导出，否则会有错误！" % sheet.name)
                 print("        ")
-
-                return
-            d[q] = sheet.cell(i, j).value
-           # print(sheet.cell(i, j).value)
-
+                # sheet.cell(i, j).value = mixStr
+                d[q] = mixStr
+                # return
+            else:
+                d[q] = sheet.cell(i, j).value
         ap = []
         count = 0
         for k, v in d.items():
@@ -73,13 +75,15 @@ def openWorkbook(workbook, sheet):
             if(valueType == '' or valueType == None):
                 print("%s缺少类型"%sheet.name)
                 return
-
+            if(v==mixStr):
+                continue
             if isinstance(v, float):  # excel中的数字值默认是float,需要进行判断处理，通过'"%s":%d'，'"%s":"%s"'格式化数组\
                 ap.append('"%s":%d' % (k, v))
             else:
                 if(valueType == "int"):
                     print("%s 表，类型错误%d行%d列：" % (sheet.name, i + 1, count))
                     print("        ")
+                    # ap.append('"%s":%d' % (k, v))
                     return
                 elif(valueType == "list"):  # 新增的数组类型判断
                     # v2 = str(v).split("|")
@@ -99,8 +103,8 @@ def openWorkbook(workbook, sheet):
                     
                     for vv in v2:
                         if(not vv.isdigit()):
-                           print("%snum_list中有字符串"%sheet.name)
-                           return
+                            print("%snum_list中有字符串"%sheet.name)
+                            return
                         v3.append(int(vv))
                     ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
                 elif(valueType == "str_list"):
@@ -110,7 +114,7 @@ def openWorkbook(workbook, sheet):
                         v3.append(str(vv))
                     ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
                 elif(valueType == "item"):
-                    v2 = re.split(r';',str(v))
+                    v2 = re.split(r',',str(v))
                     v3={
                         "itemId":int(v2[0]),
                         "itemNum":int(v2[1])
@@ -120,7 +124,7 @@ def openWorkbook(workbook, sheet):
                     v2 = re.split(r'\|',str(v))
                     v3 = []
                     for vv in v2:
-                        vv4 = re.split(r';',str(vv))
+                        vv4 = re.split(r',',str(vv))
                         v3.append({
                         "itemId":int(vv4[0]),
                         "itemNum":int(vv4[1])
