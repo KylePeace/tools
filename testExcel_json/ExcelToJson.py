@@ -77,7 +77,10 @@ def openWorkbook(workbook, sheet):
                 return
             if(v==mixStr):
                 continue
-            if isinstance(v, float):  # excel中的数字值默认是float,需要进行判断处理，通过'"%s":%d'，'"%s":"%s"'格式化数组\
+            
+            if(valueType == "float"):  
+                ap.append('"%s":%d' % (k, v))
+            elif isinstance(v, float):  # excel中的数字值默认是float,需要进行判断处理，通过'"%s":%d'，'"%s":"%s"'格式化数组\
                 ap.append('"%s":%d' % (k, v))
             else:
                 if(valueType == "int"):
@@ -112,6 +115,12 @@ def openWorkbook(workbook, sheet):
                     v3 = []
                     for vv in v2:
                         v3.append(str(vv))
+                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+                elif(valueType == "float_list"):
+                    v2 = re.split(r'\|',str(v))
+                    v3 = []
+                    for vv in v2:
+                        v3.append(float(vv))
                     ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
                 elif(valueType == "item"):
                     v2 = re.split(r',',str(v))
