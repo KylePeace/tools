@@ -98,15 +98,15 @@ def openWorkbook(workbook, sheet):
                         else:
                             v3.append(str(vv))
                     ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))  # 将数组类型的值转换为字符串并添加到列表中
-                elif(valueType == "string"): 
+                elif(valueType == "string" or valueType == "str"): 
                     ap.append('"%s":"%s"' % (k, v))
-                elif(valueType == "num_list"):
+                elif(valueType == "num_list" or valueType == "int_list"):
                     v2 = re.split(r'\|',str(v))
                     v3 = []
                     
                     for vv in v2:
                         if(not vv.isdigit()):
-                            print("%snum_list中有字符串"%sheet.name)
+                            print("%sint_list中有字符串"%sheet.name)
                             return
                         v3.append(int(vv))
                     ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
