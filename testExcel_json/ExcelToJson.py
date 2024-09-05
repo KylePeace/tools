@@ -66,6 +66,8 @@ def createTsType(workbook, sheet,fileName):
         #类型
         type = sheet.cell(2, i).value
         # print(sheet.cell(2, i).value)
+        if(name == "" or type == ""):
+            continue
         finalstr+= "\n"
         finalstr+= "\t"+"/***%s"%des+"***/"+"\n"
         finalstr+="\t"
