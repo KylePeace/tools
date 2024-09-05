@@ -25,6 +25,9 @@ import re
 excelPath = os.getcwd()+r"/excel/"
 #json路径 = r"json"
 jsonPath = os.getcwd()+r'/json/'
+#ts路径 = r"json"
+tsEnumPath = os.getcwd()+r'/ts/'
+
 # excelPath = r"D:/learn/other/tools/testExcel_json/excel/"
 # #json路径 = r"json"
 # jsonPath = r'D:/learn/other/tools/testExcel_json/json/'
@@ -38,18 +41,67 @@ excelFile = []
 readcol = 3
 
 mixStr = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+global  tsTypeStr
+tsTypeStr = "\n\n"
 
+def createTsType(workbook, sheet,fileName):
+    rows = sheet.nrows
+    cols = sheet.ncols
+    print("%s rows,cols:%d,%d" % (sheet.name, rows, cols))
+    
+
+    # 创建一个数组用来存储excel中的数据
+    p = []
+    print("--------------------------")
+    finalstr = "/***%s"%fileName+"***/"+"\n"
+    finalstr += "export interface %s \n{\n"%(sheet.name+"_row")
+
+    for i in range(0, cols):
+        #描述
+        des = sheet.cell(0, i).value
+        # print(sheet.cell(0, i).value)
+        #字段名
+        name = sheet.cell(1, i).value
+        # print(sheet.cell(1, i).value)
+        #类型
+        type = sheet.cell(2, i).value
+        # print(sheet.cell(2, i).value)
+        finalstr+= "\n"
+        finalstr+= "\t"+"/***%s"%des+"***/"+"\n"
+        finalstr+="\t"
+        if(type == "int" or type == "float"):
+            finalstr+= name+" :number"
+        elif(type == "string" or type =="str" ):
+            finalstr+= name+" :string"
+        elif(type == "list"):
+            finalstr+= name+" :any[]"
+        elif(type == "num_list" or type == "float_list" or type == "int_list" ):#数字数组
+            finalstr+= name+" :number[]"
+        elif(type == "str_list" or type == "string_list"):#字符串数组
+            finalstr+= name+" :string[]"
+        elif(type == "item"):
+            finalstr+=name +" :{itemId:number, itemNum:number}"
+        elif(type == "item_list"):
+            finalstr+=name +" :{itemId:number, itemNum:number}[]"
+        finalstr+=";"
+        finalstr+="\n"
+      
+    finalstr+="\n}\n\n\n"
+    print("finalstr:\n%s"%finalstr)
+    print("--------------------------")
+    return finalstr
 def openWorkbook(workbook, sheet):
     # 获得行数和列数
     rows = sheet.nrows
     cols = sheet.ncols
     print("%s rows,cols:%d,%d" % (sheet.name, rows, cols))
+    
 
     # 创建一个数组用来存储excel中的数据
     p = []
 
     # 表头
-    #print("rows:", rows)
+    # print("rows:", rows)
     for i in range(readcol, rows):
         d = {}
         for j in range(0, cols):
@@ -171,14 +223,20 @@ def readExcel(file):
     workbook = xlrd.open_workbook(excelPath + file)
     # 选取需要读取数据的那一页
   
-
+    global tsTypeStr 
     sheets = workbook.sheet_names()
+
     for sh in sheets:
         s = workbook.sheet_by_name(sh)
 
         openWorkbook(workbook, s)
+        tsTypeStr+=createTsType(workbook, s,file)
+       
+    print("tsTypeStr:%s"%tsTypeStr)
+    with open(tsEnumPath + "ConfigDefine" + ".ts", "w", encoding='utf8') as f:
+        f.write(tsTypeStr)
+        f.close()
 
-# 创建目录
 
 
 def judgeDir():
@@ -195,6 +253,13 @@ def judgeDir():
         print(jsonPath + ' 创建成功')
     else:
         print(jsonPath + ' 目录已存在')
+
+    isExist2 = os.path.exists(tsEnumPath)
+    if not isExist2:
+        os.makedirs(tsEnumPath)
+        print(tsEnumPath + ' 创建成功')
+    else:
+        print(tsEnumPath + ' 目录已存在')
 
 
 def main():
