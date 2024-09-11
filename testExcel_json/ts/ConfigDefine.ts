@@ -40,6 +40,12 @@ export interface st_test_row
 	/***测试int_list***/
 	test_int_list :number[];
 
+	/***二维数组***/
+	test_int_list_list :number[][];
+
+	/***二维数组***/
+	str_list_list :string[][];
+
 }
 
 

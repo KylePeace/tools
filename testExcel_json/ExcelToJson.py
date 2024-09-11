@@ -85,6 +85,10 @@ def createTsType(workbook, sheet,fileName):
             finalstr+=name +" :{itemId:number, itemNum:number}"
         elif(type == "item_list"):
             finalstr+=name +" :{itemId:number, itemNum:number}[]"
+        elif(type == "int_list_list"):
+            finalstr+=name +" :number[][]"
+        elif(type == "str_list_list"):
+            finalstr+=name +" :string[][]"
         finalstr+=";"
         finalstr+="\n"
       
@@ -193,6 +197,27 @@ def openWorkbook(workbook, sheet):
                         "itemNum":int(vv4[1])
                     })
                     ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+                elif(valueType =="int_list_list"):
+                    v2 = re.split(r'\|',str(v))
+                    v3 = []
+                    for vv in v2:
+                        vv4 = re.split(r',',str(vv))
+                        v5 = []
+                        for vvv in vv4:
+                            v5.append(int(vvv))
+                        v3.append(v5)
+                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+                elif(valueType == "str_list_list"):
+                    v2 = re.split(r'\|',str(v))
+                    v3 = []
+                    for vv in v2:
+                        vv4 = re.split(r',',str(vv))
+                        v5 = []
+                        for vvv in vv4:
+                            v5.append(str(vvv))
+                        v3.append(v5)
+                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+
         s = '{%s}' % (','.join(ap))  # 继续格式化
         p.append(s)
 
