@@ -48,7 +48,8 @@ def createTsType(workbook, sheet,fileName):
     rows = sheet.nrows
     cols = sheet.ncols
     print("%s rows,cols:%d,%d" % (sheet.name, rows, cols))
-    
+    if("st" not in sheet.name):
+        return   ""
 
     # 创建一个数组用来存储excel中的数据
     p = []
@@ -68,27 +69,31 @@ def createTsType(workbook, sheet,fileName):
         # print(sheet.cell(2, i).value)
         if(name == "" or type == ""):
             continue
-        finalstr+= "\n"
-        finalstr+= "\t"+"/***%s"%des+"***/"+"\n"
-        finalstr+="\t"
+        tempstr = ""
+        tempstr+= "\n"
+        tempstr+= "\t"+"/***%s"%des+"***/"+"\n"
+        tempstr+="\t"
         if(type == "int" or type == "float"):
-            finalstr+= name+" :number"
+            tempstr+= name+" :number"
         elif(type == "string" or type =="str" ):
-            finalstr+= name+" :string"
+            tempstr+= name+" :string"
         elif(type == "list"):
-            finalstr+= name+" :any[]"
+            tempstr+= name+" :any[]"
         elif(type == "num_list" or type == "float_list" or type == "int_list" ):#数字数组
-            finalstr+= name+" :number[]"
+            tempstr+= name+" :number[]"
         elif(type == "str_list" or type == "string_list"):#字符串数组
-            finalstr+= name+" :string[]"
+            tempstr+= name+" :string[]"
         elif(type == "item"):
-            finalstr+=name +" :{itemId:number, itemNum:number}"
+            tempstr+=name +" :{itemId:number, itemNum:number}"
         elif(type == "item_list"):
-            finalstr+=name +" :{itemId:number, itemNum:number}[]"
+            tempstr+=name +" :{itemId:number, itemNum:number}[]"
+        else:
+            continue
     
 
-        finalstr+=";"
-        finalstr+="\n"
+        tempstr+=";"
+        tempstr+="\n"
+        finalstr+=tempstr
       
     finalstr+="\n}\n\n\n"
     print("finalstr:\n%s"%finalstr)
@@ -103,8 +108,8 @@ def openWorkbook(workbook, sheet):
     rows = sheet.nrows
     cols = sheet.ncols
     print("%s rows,cols:%d,%d" % (sheet.name, rows, cols))
-    
-
+    if("st" not in sheet.name):
+        return
     # 创建一个数组用来存储excel中的数据
     p = []
 
@@ -144,11 +149,21 @@ def openWorkbook(workbook, sheet):
             
 
             if(valueType == "float"):  
-                ap.append('"%s":%d' % (k, v))
+                ap.append('"%s":%s' % (k, v))
+            # elif isinstance(v,float): #兼容excel导出的浮点数  excel 导出数字一定是浮数
+            #     ap.append('"%s":%d' % (k, v)) 
             elif(valueType == "int"):
-                    print("%s 表，类型错误%d行%d列：" % (sheet.name, i + 1, count))
-                    print("        ")
-                    ap.append('"%s":%d' % (k, v))
+                if ".0" in str(v) or "-.0" in str(v) or ".00" in str(v) or "-.00" in str(v):
+                    ap.append('"%s":%s' % (k, int(v))  )
+                else:
+                     ap.append('"%s":%s' % (k, float(v)))
+
+                    # print("%s 表，类型错误%d行%d列：" % (sheet.name, i + 1, count))
+                    # print("        ")
+                    
+                       
+
+                    # ap.append('"%s":%d' % (k, v))
                     #return
             elif(valueType == "list"):  # 新增的数组类型判断
                 # v2 = str(v).split("|")
@@ -233,11 +248,7 @@ def openWorkbook(workbook, sheet):
                 for vv in v2:
                     vv4 = re.split(r',',str(vv))
                     v5 = []
-                    print("vvv4:",vv4)
                     for vvv in vv4:
-                        print("isinstance(vvv,int)",vvv,isinstance(vvv,int))
-                        print("isinstance(vvv,int)",vvv,isinstance(vvv,float))
-
                         if '.' in vvv:
                             v5.append(float(vvv)) 
                         else :
