@@ -85,10 +85,8 @@ def createTsType(workbook, sheet,fileName):
             finalstr+=name +" :{itemId:number, itemNum:number}"
         elif(type == "item_list"):
             finalstr+=name +" :{itemId:number, itemNum:number}[]"
-        elif(type == "int_list_list"):
-            finalstr+=name +" :number[][]"
-        elif(type == "str_list_list"):
-            finalstr+=name +" :string[][]"
+    
+
         finalstr+=";"
         finalstr+="\n"
       
@@ -96,6 +94,10 @@ def createTsType(workbook, sheet,fileName):
     print("finalstr:\n%s"%finalstr)
     print("--------------------------")
     return finalstr
+
+
+
+
 def openWorkbook(workbook, sheet):
     # 获得行数和列数
     rows = sheet.nrows
@@ -135,88 +137,113 @@ def openWorkbook(workbook, sheet):
                 return
             if(v==mixStr):
                 continue
+            #兼容把所有的中文逗号替换成英文
+            #判断是不是字符串
+            if(isinstance(v,str)):
+                v = v.replace("，",",")
             
+
             if(valueType == "float"):  
                 ap.append('"%s":%d' % (k, v))
-            elif isinstance(v, float):  # excel中的数字值默认是float,需要进行判断处理，通过'"%s":%d'，'"%s":"%s"'格式化数组\
-                ap.append('"%s":%d' % (k, v))
-            else:
-                if(valueType == "int"):
+            elif(valueType == "int"):
                     print("%s 表，类型错误%d行%d列：" % (sheet.name, i + 1, count))
                     print("        ")
-                    # ap.append('"%s":%d' % (k, v))
-                    return
-                elif(valueType == "list"):  # 新增的数组类型判断
-                    # v2 = str(v).split("|")
-                    v2 = re.split(r'\|',str(v))
-                    v3 = []
-                    for vv in v2:
-                        if(vv.isdigit()):
-                            v3.append(int(vv))
-                        else:
-                            v3.append(str(vv))
-                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))  # 将数组类型的值转换为字符串并添加到列表中
-                elif(valueType == "string" or valueType == "str"): 
-                    ap.append('"%s":"%s"' % (k, v))
-                elif(valueType == "num_list" or valueType == "int_list"):
-                    v2 = re.split(r'\|',str(v))
-                    v3 = []
-                    
-                    for vv in v2:
-                        if(not vv.isdigit()):
-                            print("%sint_list中有字符串"%sheet.name)
-                            return
+                    ap.append('"%s":%d' % (k, v))
+                    #return
+            elif(valueType == "list"):  # 新增的数组类型判断
+                # v2 = str(v).split("|")
+                v2 = re.split(r'\|',str(v))
+                v3 = []
+                for vv in v2:
+                    if(vv.isdigit()):
                         v3.append(int(vv))
-                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
-                elif(valueType == "str_list"):
-                    v2 = re.split(r'\|',str(v))
-                    v3 = []
-                    for vv in v2:
+                    else:
                         v3.append(str(vv))
-                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
-                elif(valueType == "float_list"):
-                    v2 = re.split(r'\|',str(v))
-                    v3 = []
-                    for vv in v2:
-                        v3.append(float(vv))
-                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
-                elif(valueType == "item"):
-                    v2 = re.split(r',',str(v))
-                    v3={
-                        "itemId":int(v2[0]),
-                        "itemNum":int(v2[1])
-                    }
-                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
-                elif(valueType =="item_list"):
-                    v2 = re.split(r'\|',str(v))
-                    v3 = []
-                    for vv in v2:
-                        vv4 = re.split(r',',str(vv))
-                        v3.append({
-                        "itemId":int(vv4[0]),
-                        "itemNum":int(vv4[1])
-                    })
-                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
-                elif(valueType =="int_list_list"):
-                    v2 = re.split(r'\|',str(v))
-                    v3 = []
-                    for vv in v2:
-                        vv4 = re.split(r',',str(vv))
-                        v5 = []
-                        for vvv in vv4:
+                ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))  # 将数组类型的值转换为字符串并添加到列表中
+            elif(valueType == "string" or valueType == "str"): 
+                ap.append('"%s":"%s"' % (k, v))
+            # elif(valueType == "num_list" or valueType == "int_list"):
+            #     v2 = re.split(r'\|',str(v))
+            #     v3 = []
+                
+            #     for vv in v2:
+            #         if(not vv.isdigit()):
+            #             print("%sint_list中有字符串"%sheet.name)
+            #             return
+            #         v3.append(int(vv))
+            #     ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+            elif(valueType == "str_list"):
+                # v2 = re.split(r'\|',str(v))
+                # v3 = []
+                # for vv in v2:
+                #     v3.append(str(vv))
+                # ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+
+
+                v2 = re.split(r'\|',str(v))
+                v3 = []
+                for vv in v2:
+                    vv4 = re.split(r',',str(vv))
+                    v5 = []
+                    for vvv in vv4:
+                        v5.append(str(vvv))
+                    v3.append(v5)
+                ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+
+            elif(valueType == "item"):
+                v2 = re.split(r',',str(v))
+                v3={
+                    "itemId":int(v2[0]),
+                    "itemNum":int(v2[1])
+                }
+                ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+            elif(valueType =="item_list"):
+                v2 = re.split(r'\|',str(v))
+                v3 = []
+                for vv in v2:
+                    vv4 = re.split(r',',str(vv))
+                    v3.append({
+                    "itemId":int(vv4[0]),
+                    "itemNum":int(vv4[1])
+                })
+                ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+            # elif(valueType =="int_list_list"):
+            #     v2 = re.split(r'\|',str(v))
+            #     v3 = []
+            #     for vv in v2:
+            #         vv4 = re.split(r',',str(vv))
+            #         v5 = []
+            #         for vvv in vv4:
+            #             v5.append(int(vvv))
+            #         v3.append(v5)
+            #     ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+            # elif(valueType == "str_list_list"):
+            #     v2 = re.split(r'\|',str(v))
+            #     v3 = []
+            #     for vv in v2:
+            #         vv4 = re.split(r',',str(vv))
+            #         v5 = []
+            #         for vvv in vv4:
+            #             v5.append(str(vvv))
+            #         v3.append(v5)
+            #     ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+            elif(valueType == "int_list" or valueType == "num_list" or valueType == "float_list"):
+                v2 = re.split(r'\|',str(v))
+                v3 = []
+                for vv in v2:
+                    vv4 = re.split(r',',str(vv))
+                    v5 = []
+                    print("vvv4:",vv4)
+                    for vvv in vv4:
+                        print("isinstance(vvv,int)",vvv,isinstance(vvv,int))
+                        print("isinstance(vvv,int)",vvv,isinstance(vvv,float))
+
+                        if '.' in vvv:
+                            v5.append(float(vvv)) 
+                        else :
                             v5.append(int(vvv))
-                        v3.append(v5)
-                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
-                elif(valueType == "str_list_list"):
-                    v2 = re.split(r'\|',str(v))
-                    v3 = []
-                    for vv in v2:
-                        vv4 = re.split(r',',str(vv))
-                        v5 = []
-                        for vvv in vv4:
-                            v5.append(str(vvv))
-                        v3.append(v5)
-                    ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+                    v3.append(v5)
+                ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
 
         s = '{%s}' % (','.join(ap))  # 继续格式化
         p.append(s)

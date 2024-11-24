@@ -16,8 +16,8 @@ export interface st_test_row
 	/***测试list***/
 	test_list :any[];
 
-	/***测试num_list***/
-	test_num_list :number[];
+	/***测试int_list2***/
+	test_int_list2 :number[];
 
 	/***测试str_list***/
 	test_str_list :string[];
@@ -40,11 +40,11 @@ export interface st_test_row
 	/***测试int_list***/
 	test_int_list :number[];
 
-	/***二维数组***/
-	test_int_list_list :number[][];
+	/***int二维数组***/
+	test_int_list_list :number[];
 
-	/***二维数组***/
-	str_list_list :string[][];
+	/***str二维数组***/
+	str_list_list :string[];
 
 }
 
