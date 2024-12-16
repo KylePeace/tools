@@ -21,18 +21,34 @@ import os
 import sys
 import json
 import re
+
+#同步读取.txt文件
+def get_json():
+    with open("./config.json", "r") as file:
+        content = file.read()
+    return content
+
+formatted_json  = json.loads(get_json())
+print(formatted_json["JsonPath"])
+print(formatted_json["DefinePath"])
+
+
+
+
 # # excel 路径
 excelPath = os.getcwd()+r"/excel/"
-#json路径 = r"json"
-jsonPath = os.getcwd()+r'/json/'
-#ts路径 = r"json"
-tsEnumPath = os.getcwd()+r'/ts/'
-
-# excelPath = r"D:/learn/other/tools/testExcel_json/excel/"
 # #json路径 = r"json"
-# jsonPath = r'D:/learn/other/tools/testExcel_json/json/'
+# jsonPath = os.getcwd()+r'/json/'
+# #ts路径 = r"json"
+# tsEnumPath = os.getcwd()+r'/ts/'
+
+#json路径 = r"json"
+jsonPath = formatted_json["JsonPath"]
+#ts路径 = r"json"
+tsEnumPath = formatted_json["DefinePath"]
+
 # 文件名
-excelFile = []
+excelFile = [] 
 # print(sys.argv[0])
 # print(os.getcwd())
 
