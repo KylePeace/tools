@@ -96,7 +96,7 @@ def createTsType(workbook, sheet,fileName):
         finalstr+=tempstr
       
     finalstr+="\n}\n\n\n"
-    print("finalstr:\n%s"%finalstr)
+    # print("finalstr:\n%s"%finalstr)
     print("--------------------------")
     return finalstr
 
@@ -156,7 +156,13 @@ def openWorkbook(workbook, sheet):
                 if ".0" in str(v) or "-.0" in str(v) or ".00" in str(v) or "-.00" in str(v):
                     ap.append('"%s":%s' % (k, int(v))  )
                 else:
-                     ap.append('"%s":%s' % (k, float(v)))
+                    try:
+                        ap.append('"%s":%s' % (k, float(v)))
+                    except:
+                        print("%s 表，%d行%d列类型错误" % (sheet.name,i + 1, j + 1))
+
+                        return
+                # print("        ")
 
                     # print("%s 表，类型错误%d行%d列：" % (sheet.name, i + 1, count))
                     # print("        ")
@@ -188,22 +194,22 @@ def openWorkbook(workbook, sheet):
             #         v3.append(int(vv))
             #     ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
             elif(valueType == "str_list"):
-                # v2 = re.split(r'\|',str(v))
-                # v3 = []
-                # for vv in v2:
-                #     v3.append(str(vv))
-                # ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
-
-
                 v2 = re.split(r'\|',str(v))
                 v3 = []
                 for vv in v2:
-                    vv4 = re.split(r',',str(vv))
-                    v5 = []
-                    for vvv in vv4:
-                        v5.append(str(vvv))
-                    v3.append(v5)
+                    v3.append(str(vv))
                 ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
+
+
+                # v2 = re.split(r'\|',str(v))
+                # v3 = []
+                # for vv in v2:
+                #     vv4 = re.split(r',',str(vv))
+                #     v5 = []
+                #     for vvv in vv4:
+                #         v5.append(str(vvv))
+                #     v3.append(v5)
+                # ap.append('"%s":%s' % (k, json.dumps(v3,ensure_ascii=False)))
 
             elif(valueType == "item"):
                 v2 = re.split(r',',str(v))
